@@ -18,6 +18,8 @@ import hoggormplot as hopl
 
 from abc import ABC, abstractmethod
 from itertools import combinations, combinations_with_replacement
+
+import sklearn.metrics
 from joblib import Parallel, delayed
 
 from sklearn.linear_model import LogisticRegression, ElasticNet, \
@@ -257,8 +259,10 @@ class RENT_Base(ABC):
         # Initiate dictionaries. Keys are (C, K, num_w_init)
         self._weight_dict = {}
         self._score_dict = {}
+        self._auc_dict = {}
         self._weight_list = []
         self._score_list = []
+        self._auc_list = []
 
         # stop runtime
         start = time.time()
@@ -1809,6 +1813,10 @@ class RENT_Regression(RENT_Base):
                 score = r2_score(y_test,pred)
                 self._score_dict[(C, l1, K)] = score
                 self._score_list.append(score)
+
+                auc = sklearn.metrics.roc_auc_score(y_test, pred)
+                self._auc_dict[(C, l1, K)] = auc
+                self._auc_list.append(auc)
     
     def train(self):
         self._predictions_abs_errors = {}
