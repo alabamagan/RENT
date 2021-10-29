@@ -1773,12 +1773,12 @@ class RENT_Regression(RENT_Base):
                     X_train, X_test, y_train, y_test = train_test_split(
                               self._data, self._target,
                               test_size=self._random_testsizes[K],
-                              random_state=None)
+                              random_state=None, stratify=self._target)
                 else:
                     X_train, X_test, y_train, y_test = train_test_split(
                               self._data, self._target,
                               test_size=self._random_testsizes[K],
-                              random_state=K)
+                              random_state=K, stratify=self._target)
 
                 self._X_test = X_test
 
