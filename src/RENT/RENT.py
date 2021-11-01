@@ -28,7 +28,7 @@ from sklearn.metrics import f1_score, precision_score, recall_score, \
                             matthews_corrcoef, r2_score, accuracy_score
 from sklearn.model_selection import train_test_split, StratifiedKFold, KFold
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
-
+from sklearn.ensemble import AdaBoostClassifier, AdaBoostRegressor
 from scipy.stats import t
 
 
@@ -1613,6 +1613,11 @@ class RENT_Regression(RENT_Base):
         Track the train process if value > 1. If ``verbose = 1``, only the overview
         of RENT input will be shown. Default: ``verbose=0``.
 
+    boosting : <bool>
+        Boosting of the E-net to form an ensemble of E-nets using AdaBoost.
+        Features' coefficients of the weaker learners will be weighted according the
+        boosting coefficients and than used included in feature selection analosys.
+
     RETURNS
     ------
     <class>
@@ -1622,8 +1627,10 @@ class RENT_Regression(RENT_Base):
     def __init__(self, data, target, feat_names=[], 
                  C=[1,10], l1_ratios = [0.6], autoEnetParSel=True,
                  poly='OFF', testsize_range=(0.2, 0.6),
-                 K=100, scale=True, random_state = None, verbose = 0):
+                 K=100, scale=True, random_state = None, verbose = 0,
+                 boosting = False):
 
+        self.boosting = boosting
 
         super().__init__(data, target, feat_names, C, l1_ratios, 
                          autoEnetParSel, poly, testsize_range, K, scale, 
@@ -1796,12 +1803,22 @@ class RENT_Regression(RENT_Base):
 
                 model = ElasticNet(alpha=1/C, l1_ratio=l1,
                                        max_iter=5000, random_state=self._random_state, \
-                                       fit_intercept=False).\
-                                       fit(X_train_std, y_train)
+                                       fit_intercept=False)
 
-                # Get all weights (coefficients). Those that were selected
-                # are non-zero, otherwise zero
-                mod_coef = model.coef_.reshape(1, len(model.coef_))
+                if self.boosting:
+                    # Boosting to improve model's generality
+                    model = AdaBoostRegressor(model, n_estimators=30).fit(X_train_std, y_train)
+
+                    # The weak learners' coefficients are weighted before averaging.
+                    coefs = np.stack(i.coef_ for i in model.estimators_)
+                    weighted_coefs = (coefs.T * model.estimator_weights_[:coefs.shape[0]]).mean(axis=1)
+
+                    # Get all weights (coefficients). Those that were selected
+                    # are non-zero, otherwise zero
+                    mod_coef = weighted_coefs.reshape(1, len(weighted_coefs))
+                else:
+                    mod_coef = model.coef_.reshape(1, len(model.coef_))
+
                 self._weight_dict[(C, l1, K)] = mod_coef
                 self._weight_list.append(mod_coef)
 
