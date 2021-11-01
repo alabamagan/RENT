@@ -1616,7 +1616,8 @@ class RENT_Regression(RENT_Base):
     boosting : <bool>
         Boosting of the E-net to form an ensemble of E-nets using AdaBoost.
         Features' coefficients of the weaker learners will be weighted according the
-        boosting coefficients and than used included in feature selection analosys.
+        boosting coefficients and than used included in feature selection analysis.
+        Set this to True if BRENT is to be used. Default to False (i.e., vanilla RENT)
 
     RETURNS
     ------
