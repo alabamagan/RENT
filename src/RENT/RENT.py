@@ -1811,7 +1811,7 @@ class RENT_Regression(RENT_Base):
                     model = AdaBoostRegressor(model, n_estimators=30).fit(X_train_std, y_train)
 
                     # The weak learners' coefficients are weighted before averaging.
-                    coefs = np.stack(i.coef_ for i in model.estimators_)
+                    coefs = np.stack([i.coef_ for i in model.estimators_])
                     weighted_coefs = (coefs.T * model.estimator_weights_[:coefs.shape[0]]).mean(axis=1)
 
                     # Get all weights (coefficients). Those that were selected
