@@ -16,6 +16,7 @@ This is a summary of modifications made to the original RENT in this forked repo
 
 * For bootstraipping before each repeated Elastic Net run, the bootstraipping was done with stratification based on the target label distribution.
 * Boosting was added to Elastic Net for `RENT_Regression()`. The rationale is that even the current selection based on learnt E-Net coefficients, but these coefficients were optimized with a soft-margin and ignored the sample points that lies in the soft-margin. By taking into account the weighted coefficient of the weaker learning in the boosted ensemble of Elastic Nets, this could be improved.
+* Coefficients of features learnt were further ranked by their normalized mean and variance, which translate to their importance and stability. An option `n_features` were added to suggest the maximum number of features to return.
 
 Example
 -------
@@ -55,7 +56,6 @@ Citing RENT
 -----------
 
 If you use RENT in a report or scientific publication, we would appreciate citations to the following paper:
-
 
 Jenul et al., (2021). RENT: A Python Package for Repeated Elastic Net Feature Selection. Journal of Open Source Software, 6(63), 3323, https://doi.org/10.21105/joss.03323
 
