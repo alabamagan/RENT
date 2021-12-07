@@ -10,7 +10,7 @@ defined.
 
 More details are provided here: [RENT - Repeated Elastic Net Technique for Feature Selection](https://arxiv.org/abs/2009.12780v2)
 
-## Modifications in this fored repo
+## Modifications in this forked repo
 
 This is a summary of modifications made to the original RENT in this forked repo:
 

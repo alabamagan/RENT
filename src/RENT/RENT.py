@@ -1818,6 +1818,7 @@ class RENT_Regression(RENT_Base):
                     # are non-zero, otherwise zero
                     mod_coef = weighted_coefs.reshape(1, len(weighted_coefs))
                 else:
+                    model.fit(X_train_std, y_train)
                     mod_coef = model.coef_.reshape(1, len(model.coef_))
 
                 self._weight_dict[(C, l1, K)] = mod_coef
