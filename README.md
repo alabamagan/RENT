@@ -1,25 +1,31 @@
-RENT
-====
-
-<img src="/images/RENT_logo.png" width="200"/>
-
-RENT (Repeated Elastic Net Technique) is a feature selection method for binary classification and regression problems. At its core
-RENT trains an ensemble of `<img src="https://render.githubusercontent.com/render/math?math=K\in\mathbb{N}">` generalized linear models using regularized elastic net to select features. Each model `<img src="https://render.githubusercontent.com/render/math?math=k=1:K">` in the ensemble is trained using a randomly, iid sampled subset of rows of the full training data. A single data point can appear at most once in each subset, but may appear in multiple subsets. From these `<img src="https://render.githubusercontent.com/render/math?math=K">`unique models one can acquire weight distributions for each
-feature that contain rich information on the stability of feature selection and from which several adjustable classification criteria may be
-defined.
-
-More details are provided here: [RENT - Repeated Elastic Net Technique for Feature Selection](https://arxiv.org/abs/2009.12780v2)
-
 ## Modifications in this forked repo
 
 This is a summary of modifications made to the original RENT in this forked repo:
 
-* For bootstraipping before each repeated Elastic Net run, the bootstraipping was done with stratification based on the target label distribution.
+* For bootstrapping before each repeated Elastic Net run, the bootstrapping was done with stratification based on the target label distribution.
 * Boosting was added to Elastic Net for `RENT_Regression()`. The rationale is that even the current selection based on learnt E-Net coefficients, but these coefficients were optimized with a soft-margin and ignored the sample points that lies in the soft-margin. By taking into account the weighted coefficient of the weaker learning in the boosted ensemble of Elastic Nets, this could be improved.
 * Coefficients of features learnt were further ranked by their normalized mean and variance, which translate to their importance and stability. An option `n_features` were added to suggest the maximum number of features to return.
 
 Example
 -------
+
+Everything remains the same as the main repo, except there is now an additional option to use boosting instead of just elastic net:
+
+```python
+model = RENT.RENT_Regression(data=pd.DataFrame(features),
+                             target=_targets.ravel(),
+                             feat_names=_features_names,
+                             C=C,
+                             l1_ratios=l1_ratio,
+                             autoEnetParSel=False,
+                             poly='OFF',
+                             testsize_range=(1/float(n_splits), 1/float(n_splits)),
+                             K=n_trials,
+                             random_state=0,
+                             verbose=1,
+                             scale=False,
+                             boosting=boosting) # BRENT or RENT
+```
 
 Below are links to Jupyter-notebooks that illustrate how to use RENT for
 
