@@ -5,7 +5,6 @@ Created on Fri Mar  5 10:51:26 2021
 
 @author: anna
 """
-import matplotlib.pyplot as plt
 import numpy as np
 import math
 import pandas as pd
@@ -546,6 +545,8 @@ class RENT_Base(ABC):
         """
         Barplot of tau_1 value for each feature.
         """
+        import matplotlib.pyplot as plt
+
         if not hasattr(self, '_perc'):
             sys.exit('Run select_features() first!')
 
@@ -563,6 +564,8 @@ class RENT_Base(ABC):
         ``K`` models. The second curve plots the percentage of weights set 
         to 0, respectively.
         """
+        import matplotlib.pyplot as plt
+
         fig, ax = plt.subplots(figsize=(10, 7))
         num_zeros = np.sum(1 - self.get_weight_distributions(binary=True), \
                             axis=1) / len(self._feat_names)
@@ -689,7 +692,7 @@ class RENT_Base(ABC):
         var_comp1 = round(XexplVar[comp1-1], 1)
         var_comp2 = round(XexplVar[comp2-1], 1)
 
-
+        import matplotlib.pyplot as plt
         fig, ax = plt.subplots()
         ax.set_xlabel('comp ' + str(comp1) +' ('+str(var_comp1)+'%)', fontsize=10)
         ax.set_ylabel('comp ' + str(comp2) +' ('+str(var_comp2)+'%)', fontsize=10)
@@ -851,6 +854,8 @@ class RENT_Base(ABC):
         alpha: <float>
             Significance level for the `t`-test. Default ``alpha=0.05``.
         """
+        import matplotlib.pyplot as plt
+
         if not hasattr(self, '_sel_var'):
             sys.exit('Run select_features() first!')
 
@@ -894,6 +899,7 @@ class RENT_Base(ABC):
             print('With a significancelevel of ', alpha, ' H0 is rejected.')
         else:
             print('With a significancelevel of ', alpha, ' H0 is accepted.')
+
 
         plt.figure(figsize=(15, 7))
         sns.kdeplot(VS1, shade=True, color="b", label='VS1')
@@ -1409,7 +1415,8 @@ class RENT_Classification(RENT_Base):
             Normalize the histogram, from `seaborn distplot`.
             Default: ``norm_hist=False``.              
         """
-        
+        import matplotlib.pyplot as plt
+
         if not hasattr(self, '_best_C'):
             sys.exit('Run train() first!')
             
@@ -1926,6 +1933,8 @@ class RENT_Regression(RENT_Base):
             Normalize the histogram, from `seaborn distplot`.
             Default: ``norm_hist=False``.
         """
+        import matplotlib.pyplot as plt
+
         if not hasattr(self, '_histogram_data'):
             sys.exit('Run get_summary_objects() first!')
         # different binning schemata
