@@ -8,12 +8,10 @@ Created on Fri Mar  5 10:51:26 2021
 import numpy as np
 import math
 import pandas as pd
-import seaborn as sns
 import sys
 import time
 import warnings
-import hoggorm as ho
-import hoggormplot as hopl
+
 
 from abc import ABC, abstractmethod
 from itertools import combinations, combinations_with_replacement
@@ -628,6 +626,9 @@ class RENT_Base(ABC):
             Only use the features selected with RENT for PCA. Default: ``sel_vars=True``.
         
         """
+        import hoggorm as ho
+        import hoggormplot as hopl
+
         if cl not in [0, 1, 'both', 'continuous']:
             sys.exit(" 'cl' must be either 0, 1, 'both' or 'continuous'")
         if problem not in ['class', 'regression']:
@@ -855,6 +856,7 @@ class RENT_Base(ABC):
             Significance level for the `t`-test. Default ``alpha=0.05``.
         """
         import matplotlib.pyplot as plt
+        import seaborn as sns
 
         if not hasattr(self, '_sel_var'):
             sys.exit('Run select_features() first!')
@@ -1416,6 +1418,7 @@ class RENT_Classification(RENT_Base):
             Default: ``norm_hist=False``.              
         """
         import matplotlib.pyplot as plt
+        import seaborn as sns
 
         if not hasattr(self, '_best_C'):
             sys.exit('Run train() first!')
@@ -1934,6 +1937,7 @@ class RENT_Regression(RENT_Base):
             Default: ``norm_hist=False``.
         """
         import matplotlib.pyplot as plt
+        import seaborn as sns
 
         if not hasattr(self, '_histogram_data'):
             sys.exit('Run get_summary_objects() first!')
