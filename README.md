@@ -1,10 +1,20 @@
 ## Modifications in this forked repo
 
+### Summary of modifications
+
 This is a summary of modifications made to the original RENT in this forked repo:
 
 * For bootstrapping before each repeated Elastic Net run, the bootstrapping was done with stratification based on the target label distribution.
 * Boosting was added to Elastic Net for `RENT_Regression()`. The rationale is that even the current selection based on learnt E-Net coefficients, but these coefficients were optimized with a soft-margin and ignored the sample points that lies in the soft-margin. By taking into account the weighted coefficient of the weaker learning in the boosted ensemble of Elastic Nets, this could be improved.
 * Coefficients of features learnt were further ranked by their normalized mean and variance, which translate to their importance and stability. An option `n_features` were added to suggest the maximum number of features to return.
+
+### More information
+
+This forked package was not suppose to be used independently. Feature selection is a task where noise in the data is almost certainly expected. There is strong evidence that boosting is susceptible to the influence of noise in the training data such that you might see a drop in stability in general if you use the boosting setting. This is because, with boosting, slight changes in the training dataset (due to the resampling inner-loop of RENT) will lead to variance irrelevant features being selected. The boosted RENT was not intended to be used alone, but together with bagging. In more laymen terms, boosting RENT allows it to select more relevant features, but would also result in selecting more noise features. Luckily, these noisy features are also susceptible to changes in the training data such that the boost RENT will pickup different noise features when the training data changes while the relevant features would remain selected at a high probability. The noise features can, therefore, be filtered by wrapping the boosted RENT with bagging.
+
+
+
+
 
 Example
 -------
@@ -32,6 +42,8 @@ Below are links to Jupyter-notebooks that illustrate how to use RENT for
 * [classification](https://github.com/NMBU-Data-Science/RENT/blob/master/examples/Classification_example.ipynb)
 * [regression](https://github.com/NMBU-Data-Science/RENT/blob/master/examples/Regression_example.ipynb)
 * [hyperparameter search](https://github.com/NMBU-Data-Science/RENT/blob/master/examples/Extensive_hyperparameter_search.ipynb)
+
+
 
 Requirements
 ------------
