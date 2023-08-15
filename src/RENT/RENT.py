@@ -428,8 +428,8 @@ class RENT_Base(ABC):
         weights_df = pd.DataFrame()
         for k in self._weight_dict.keys():
             if k[0] == self._best_C and k[1] == self._best_l1_ratio:
-                weights_df = weights_df.append( \
-                        pd.DataFrame(self._weight_dict[k]))
+                weights_df = pd.concat([weights_df, pd.DataFrame(self._weight_dict[k])],
+                                       ignore_index=True)
         weights_df.index = ['mod {0}'.format(x+1) for x in range(self._K)]
         weights_df.columns = self._feat_names
         
@@ -1786,17 +1786,18 @@ class RENT_Regression(RENT_Base):
         for C in self._C:
             # Loop through requested number of tt splits
             for l1 in self._l1_ratios:
-                
+                # if target is not integer, assume it is not classes
+                _strat_target = self._target if all([not isinstance(val, float) for val in self._target]) else None
                 if self._random_state == None:
                     X_train, X_test, y_train, y_test = train_test_split(
                               self._data, self._target,
                               test_size=self._random_testsizes[K],
-                              random_state=None, stratify=self._target)
+                              random_state=None, stratify=_strat_target)
                 else:
                     X_train, X_test, y_train, y_test = train_test_split(
                               self._data, self._target,
                               test_size=self._random_testsizes[K],
-                              random_state=K, stratify=self._target)
+                              random_state=K, stratify=_strat_target)
 
                 self._X_test = X_test
 
@@ -1812,6 +1813,7 @@ class RENT_Regression(RENT_Base):
                 if self._verbose > 1:
                     print('l1 = ', l1, 'C = ', C, ', TT split = ', K)
 
+                # if the problem is multiclass
                 model = ElasticNet(alpha=1/C, l1_ratio=l1,
                                        max_iter=5000, random_state=self._random_state, \
                                        fit_intercept=False)
@@ -1843,9 +1845,13 @@ class RENT_Regression(RENT_Base):
                 self._score_dict[(C, l1, K)] = score
                 self._score_list.append(score)
 
-                auc = sklearn.metrics.roc_auc_score(y_test, pred)
-                self._auc_dict[(C, l1, K)] = auc
-                self._auc_list.append(auc)
+                try:
+                    auc = sklearn.metrics.roc_auc_score(y_test, pred)
+                    self._auc_dict[(C, l1, K)] = auc
+                    self._auc_list.append(auc)
+                except ValueError:
+                    self._auc_dict[(C, l1, K)] = np.nan
+                    self._auc_list.append(np.nan)
     
     def train(self):
         self._predictions_abs_errors = {}
