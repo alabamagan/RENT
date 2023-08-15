@@ -1,3 +1,10 @@
+"""
+Fork Description:
+    This is the fork for the regression test, but it is noticed that this test seems to be relying on
+    a pre-specified random seed. Although some of the test might be useful for testing the syntax, the
+    result tests are not guaranteed to be reproducible.
+"""
+
 import sys
 sys.path.append('../src')
 from RENT import RENT
@@ -130,7 +137,7 @@ def test_object_errors_values():
 
 def test_object_errors_index():
     """
-    Verify values of object errors dataframe. 
+    Verify values of object errors dataframe.
     """
     columns = object_errors.columns
     
