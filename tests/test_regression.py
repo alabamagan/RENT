@@ -1,7 +1,7 @@
 """
 Fork Description:
-    This is the fork for the regression test, but it is noticed that this test seems to be relying on
-    a pre-specified random seed. Although some of the test might be useful for testing the syntax, the
+    This is the fork for the regression unit_test, but it is noticed that this unit_test seems to be relying on
+    a pre-specified random seed. Although some of the unit_test might be useful for testing the syntax, the
     result tests are not guaranteed to be reproducible.
 """
 
